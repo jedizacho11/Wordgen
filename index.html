@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Word Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .settings {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .setting-group {
+            margin-bottom: 15px;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+        }
+        input[type="number"], input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .copy-btn {
+            background-color: #2196F3;
+        }
+        .copy-btn:hover {
+            background-color: #0b7dda;
+        }
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+            font-family: monospace;
+            word-wrap: break-word;
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .stats {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .info {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .feature-section {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .feature-section h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 Advanced Word Generator</h1>
+        <div class="info">
+            Generate random words with customizable settings including palindromes, anagrams, and more!
+        </div>
+        
+        <div class="settings">
+            <div class="setting-group">
+                <label for="wordCount">Number of Words:</label>
+                <input type="number" id="wordCount" value="50" min="1" max="1000">
+            </div>
+            
+            <div class="setting-group">
+                <label for="minLength">Minimum Word Length:</label>
+                <input type="number" id="minLength" value="2" min="2" max="10">
+            </div>
+            
+            <div class="setting-group">
+                <label for="maxLength">Maximum Word Length:</label>
+                <input type="number" id="maxLength" value="3" min="2" max="10">
+            </div>
+            
+            <div class="setting-group">
+                <label for="duplicatePercent">Duplicate Percentage (0-100%):</label>
+                <input type="number" id="duplicatePercent" value="10" min="0" max="100">
+            </div>
+            
+            <div class="setting-group full-width">
+                <label for="wordPattern">Word Pattern (C=Consonant, V=Vowel, A=Any letter):</label>
+                <input type="text" id="wordPattern" value="Cvc" placeholder="e.g., Cvc, CvCv, Cvcc, Caaa">
+                <small style="color: #666; display: block; margin-top: 5px;">
+                    Examples: "Cvc" = Hij, "CvCv" = Hija, "Cvcc" = Hajf. Separate multiple patterns with commas: "Cvc, CvCv"
+                </small>
+            </div>
+            
+            <div class="setting-group full-width">
+                <label for="consonants">Consonant Letters:</label>
+                <input type="text" id="consonants" value="BCDFGHJKLMNPQRSTVWXYZ" placeholder="Enter consonants">
+            </div>
+            
+            <div class="setting-group full-width">
+                <label for="vowels">Vowel Letters:</label>
+                <input type="text" id="vowels" value="AEIOU" placeholder="Enter vowels">
+            </div>
+            
+            <div class="setting-group full-width">
+                <label for="anyLetters">Any Letters (for 'A' pattern):</label>
+                <input type="text" id="anyLetters" value="abcdefghijklmnopqrstuvwxyz" placeholder="Enter any letters">
+            </div>
+            
+            <div class="setting-group">
+                <label for="outputFormat">Output Format:</label>
+                <select id="outputFormat">
+                    <option value="concatenated">Concatenated (HijFahJuNu...)</option>
+                    <option value="comma">Comma Separated (Hij, Fah, Ju...)</option>
+                    <option value="newline">One Per Line (Excel Column)</option>
+                    <option value="tab">Tab Separated (Excel Row)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="feature-section">
+            <h3>Special Features</h3>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="allowDuplicates" checked>
+                <label for="allowDuplicates">Allow duplicates in output</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="palindromeMode">
+                <label for="palindromeMode">Generate palindromes (reads same forwards/backwards)</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="anagramMode">
+                <label for="anagramMode">Generate anagram pairs (same letters, different order)</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="rhymeMode">
+                <label for="rhymeMode">Generate rhyming words (same ending)</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="alliterativeMode">
+                <label for="alliterativeMode">All words start with same letter</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="reverseMode">
+                <label for="reverseMode">Include reversed versions of words</label>
+            </div>
+        </div>
+        
+        <button onclick="generateWords()">Generate Words</button>
+        <button class="copy-btn" onclick="copyToClipboard()">Copy to Clipboard</button>
+        
+        <div id="output" class="output"></div>
+        <div id="stats" class="stats"></div>
+    </div>
+
+    <script>
+        function generateWordFromPattern(pattern, consonants, vowels, anyLetters) {
+            if (!pattern || !consonants || !vowels) {
+                return '';
+            }
+            
+            let word = '';
+            for (let i = 0; i < pattern.length; i++) {
+                const char = pattern[i];
+                
+                if (char === 'C') {
+                    // First letter should be uppercase, rest lowercase
+                    const letter = consonants[Math.floor(Math.random() * consonants.length)];
+                    word += (i === 0) ? letter.toUpperCase() : letter.toLowerCase();
+                } else if (char === 'V' || char === 'v') {
+                    // First letter should be uppercase, rest lowercase
+                    const letter = vowels[Math.floor(Math.random() * vowels.length)];
+                    word += (i === 0) ? letter.toUpperCase() : letter.toLowerCase();
+                } else if (char === 'A' || char === 'a') {
+                    // First letter should be uppercase, rest lowercase
+                    const letter = anyLetters[Math.floor(Math.random() * anyLetters.length)];
+                    word += (i === 0) ? letter.toUpperCase() : letter.toLowerCase();
+                } else if (char.toLowerCase() === 'c') {
+                    // Lowercase c = lowercase consonant
+                    const letter = consonants[Math.floor(Math.random() * consonants.length)];
+                    word += letter.toLowerCase();
+                }
+            }
+            
+            return word;
+        }
+
+        function generateRandomWord(minLen, maxLen, consonants, vowels, anyLetters) {
+            const length = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
+            let word = consonants[Math.floor(Math.random() * consonants.length)].toUpperCase();
+            
+            for (let i = 1; i < length; i++) {
+                word += anyLetters[Math.floor(Math.random() * anyLetters.length)];
+            }
+            
+            return word;
+        }
+
+        function generatePalindrome(minLen, maxLen, consonants, anyLetters) {
+            const length = Math.floor(Math.random() * (maxLen - minLen + 1)) + minLen;
+            const halfLen = Math.floor(length / 2);
+            
+            let firstHalf = consonants[Math.floor(Math.random() * consonants.length)].toUpperCase();
+            for (let i = 1; i < halfLen; i++) {
+                firstHalf += anyLetters[Math.floor(Math.random() * anyLetters.length)];
+            }
+            
+            let middle = '';
+            if (length % 2 === 1) {
+                middle = anyLetters[Math.floor(Math.random() * anyLetters.length)];
+            }
+            
+            const secondHalf = firstHalf.slice(1).split('').reverse().join('');
+            return firstHalf + middle + secondHalf;
+        }
+
+        function createAnagram(word) {
+            const chars = word.slice(1).split('');
+            for (let i = chars.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [chars[i], chars[j]] = [chars[j], chars[i]];
+            }
+            return word[0] + chars.join('');
+        }
+
+        function createRhyme(word, anyLetters) {
+            const ending = word.slice(-2);
+            let newWord = anyLetters[Math.floor(Math.random() * anyLetters.length)].toUpperCase();
+            for (let i = 1; i < word.length - 2; i++) {
+                newWord += anyLetters[Math.floor(Math.random() * anyLetters.length)];
+            }
+            return newWord + ending;
+        }
+
+        function reverseWord(word) {
+            return word[0] + word.slice(1).split('').reverse().join('');
+        }
+
+        function generateWords() {
+            const wordCount = parseInt(document.getElementById('wordCount').value);
+            const minLength = parseInt(document.getElementById('minLength').value);
+            const maxLength = parseInt(document.getElementById('maxLength').value);
+            const duplicatePercent = parseInt(document.getElementById('duplicatePercent').value);
+            const allowDuplicates = document.getElementById('allowDuplicates').checked;
+            
+            const wordPattern = document.getElementById('wordPattern').value.trim();
+            const consonants = document.getElementById('consonants').value.trim();
+            const vowels = document.getElementById('vowels').value.trim();
+            const anyLetters = document.getElementById('anyLetters').value.trim();
+            
+            const palindromeMode = document.getElementById('palindromeMode').checked;
+            const anagramMode = document.getElementById('anagramMode').checked;
+            const rhymeMode = document.getElementById('rhymeMode').checked;
+            const alliterativeMode = document.getElementById('alliterativeMode').checked;
+            const reverseMode = document.getElementById('reverseMode').checked;
+            
+            if (!consonants || !vowels || !anyLetters) {
+                alert('Please enter letters for consonants, vowels, and any letters!');
+                return;
+            }
+            
+            if (!wordPattern) {
+                alert('Please enter a word pattern (e.g., Cvc, CvCv)!');
+                return;
+            }
+            
+            // Parse multiple patterns
+            const patterns = wordPattern.split(',').map(p => p.trim()).filter(p => p.length > 0);
+            
+            if (patterns.length === 0) {
+                alert('Please enter at least one valid pattern!');
+                return;
+            }
+            
+            const words = [];
+            const uniqueWords = new Set();
+            
+            const baseWordCount = allowDuplicates ? 
+                Math.ceil(wordCount * (1 - duplicatePercent / 100)) : 
+                wordCount;
+            
+            let fixedFirstLetter = null;
+            if (alliterativeMode) {
+                fixedFirstLetter = consonants[Math.floor(Math.random() * consonants.length)].toUpperCase();
+            }
+            
+            while (uniqueWords.size < baseWordCount) {
+                let word;
+                
+                // Pick a random pattern from the list
+                const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+                
+                if (palindromeMode) {
+                    word = generatePalindrome(minLength, maxLength, consonants, anyLetters);
+                } else {
+                    word = generateWordFromPattern(pattern, consonants, vowels, anyLetters);
+                }
+                
+                if (alliterativeMode && fixedFirstLetter) {
+                    word = fixedFirstLetter + word.slice(1);
+                }
+                
+                if (word) uniqueWords.add(word);
+            }
+            
+            let baseWords = Array.from(uniqueWords);
+            
+            if (anagramMode && baseWords.length > 0) {
+                const anagrams = [];
+                for (let i = 0; i < Math.min(baseWords.length, Math.floor(baseWordCount / 2)); i++) {
+                    anagrams.push(createAnagram(baseWords[i]));
+                }
+                baseWords = baseWords.concat(anagrams);
+            }
+            
+            if (rhymeMode && baseWords.length > 0) {
+                const rhymes = [];
+                for (let i = 0; i < Math.min(baseWords.length, Math.floor(baseWordCount / 2)); i++) {
+                    rhymes.push(createRhyme(baseWords[i], anyLetters));
+                }
+                baseWords = baseWords.concat(rhymes);
+            }
+            
+            if (reverseMode && baseWords.length > 0) {
+                const reversed = [];
+                for (let i = 0; i < Math.min(baseWords.length, Math.floor(baseWordCount / 2)); i++) {
+                    reversed.push(reverseWord(baseWords[i]));
+                }
+                baseWords = baseWords.concat(reversed);
+            }
+            
+            for (let i = 0; i < wordCount; i++) {
+                if (allowDuplicates && i >= baseWordCount && baseWords.length > 0) {
+                    words.push(baseWords[Math.floor(Math.random() * baseWords.length)]);
+                } else if (baseWords.length > 0) {
+                    words.push(baseWords[i % baseWords.length]);
+                }
+            }
+            
+            for (let i = words.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [words[i], words[j]] = [words[j], words[i]];
+            }
+            
+            const format = document.getElementById('outputFormat').value;
+            let output;
+            
+            switch(format) {
+                case 'comma':
+                    output = words.join(', ');
+                    break;
+                case 'newline':
+                    output = words.join('\n');
+                    break;
+                case 'tab':
+                    output = words.join('\t');
+                    break;
+                default:
+                    output = words.join('');
+            }
+            
+            document.getElementById('output').textContent = output;
+            
+            const wordSet = new Set(words);
+            const duplicateCount = words.length - wordSet.size;
+            
+            let features = [];
+            if (palindromeMode) features.push('Palindromes');
+            if (anagramMode) features.push('Anagrams');
+            if (rhymeMode) features.push('Rhymes');
+            if (alliterativeMode) features.push('Alliterative');
+            if (reverseMode) features.push('Reversed');
+            
+            const statsHTML = `
+                <strong>Statistics:</strong><br>
+                Total words: ${words.length}<br>
+                Unique words: ${wordSet.size}<br>
+                Duplicate words: ${duplicateCount}<br>
+                Word lengths: ${minLength}-${maxLength} characters<br>
+                ${features.length > 0 ? 'Features: ' + features.join(', ') : ''}
+            `;
+            document.getElementById('stats').innerHTML = statsHTML;
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output').textContent;
+            if (!output) {
+                alert('Generate some words first!');
+                return;
+            }
+            
+            navigator.clipboard.writeText(output).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                alert('Failed to copy: ' + err);
+            });
+        }
+        
+        generateWords();
+    </script>
+</body>
+</html>
